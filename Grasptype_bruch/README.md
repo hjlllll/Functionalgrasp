@@ -11,9 +11,9 @@ This brunch is labeling the grasp type of each instance.
           python train_ik_model.py
 
 * We label two grasp types on each instance represented by the angles, which is the extension of the hand-object representation based on [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp).
-* Finally we train the Multi-label classification network using the modified pointnet network, the reason is to generate the grasp type (represented by angles of dexterous hand) on test set objects. We obtain 0.8 accuracy on the test set to generate prior grasp type and write it into our new hand-object representation dataset. Run the following code(train/test):
+* Finally we train the Multi-label classification network using the modified pointnet network, the reason is to generate the grasp type (represented by angles of dexterous hand) on test set objects. We obtain 0.8 accuracy on the test set to generate prior grasp type and write it into our new hand-object representation dataset in the dataset_hjl directory. Run the following code(train/test):
 
           python classify_grasp.py
 
 ## Requirements
-- **MANO layer**: To obtain mano & manopth dictory == Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth). 
+- **MANO layer**: To obtain mano & manopth directory == Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth). 
