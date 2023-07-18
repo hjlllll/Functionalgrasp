@@ -14,3 +14,6 @@ This brunch is labeling the grasp type of each instances.
 * Finally we train the Multi-label classification network using the modified pointnet network, the reason is to generate the grasp type (represented by angles of dexterous hand) on test set objects. We obtain 0.8 accuracy on the test set to generate prior grasp type and write it into our new hand-object representation dataset. Run the following code(train/test):
 
           python classify_grasp.py
+
+## Requirements
+- **MANO layer**: Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth).
