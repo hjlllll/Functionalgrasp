@@ -1,5 +1,5 @@
 ## Introduction
-This brunch is labeling the grasp type of each instances.
+This brunch is labeling the grasp type of each instance.
 * In this project, we first obtain 33 kinds of various grasp types from [Ganhand](https://github.com/enriccorona/GanHand) using MANO representation: taxonomy.npy
 * Then we use the mapping method to obtain the dexterous hand key points using the method same as [TeachNet](https://github.com/Smilels/TeachNet_Teleoperation) if vis:
    
@@ -16,4 +16,4 @@ This brunch is labeling the grasp type of each instances.
           python classify_grasp.py
 
 ## Requirements
-- **MANO layer**: Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth).
+- **MANO layer**: To obtain mano & manopth dictory == Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth). 
