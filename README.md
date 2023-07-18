@@ -25,7 +25,7 @@ In this project, the grasp synthesis network is based on [KPConv](https://github
 
 * [Pointnet/Pointnet++](https://github.com/yanx27/Pointnet_Pointnet2_pytorch): It is recommended to install the ubuntu 
 
-* If your research continues to be based on the above two projects, please directly cite the original work.
+* If your research continues to be based on the above projects, please directly cite the original work.
 
 ## Two stage 
 * First, obtain the grasp type, which code is in **Grasptype_bruch**
