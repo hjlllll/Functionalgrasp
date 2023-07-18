@@ -14,7 +14,7 @@ This brunch is labeling the grasp type of each instances.
 * Finally we train the classification network using the modified pointnet network, the reason is to generate the grasp type (represented by angles of dexterous hand) on test set objects. We obtain 0.8 accuracy on test set to generate piror grasp type and write into our new 
 hand-object representation dataset. Run the following code(train/test):
 
-          python train_test_classify_grasp.py
+          python classify_grasp.py
 
 
 
