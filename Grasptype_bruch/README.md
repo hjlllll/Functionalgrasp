@@ -16,5 +16,6 @@ This brunch is labeling the grasp type of each instance.
 
           python classify_grasp.py
 
+* The pre-trained model available in directory ./checkpoint
 ## Requirements
 - **MANO layer**: To obtain mano & manopth directory == Follow instructions from the MANO layer project in [here](https://raw.githubusercontent.com/hassony2/manopth). 
