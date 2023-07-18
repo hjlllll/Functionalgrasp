@@ -10,7 +10,7 @@ have devoted more attention to stable grasp rather than functional grasp, which 
 **Common Packages:** 
 
         we use: (other version will be available)
-        conda create -n functionalgrasp python=3.6
+        conda create -n functionalgrasp python=3.6.7
         conda activate functionalgrasp
         pip install torch==1.10.1 numpy==1.19.5 
 
