@@ -14,5 +14,7 @@ Installation process:
 
 * [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp): It is recommended to install the ubuntu version.
 
+* [Pointnet/Pointnet++](https://github.com/yanx27/Pointnet_Pointnet2_pytorch)
+
 * If your research continues to be based on the above two projects, please directly cite the original work.
 
