@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<world>
+	<graspableBody>
+		<filename>/good_shapes/gd_pliers_poisson_010_scaled.obj.smoothed.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>/home/lm/graspit/models/robots/ShadowHand_gai/our_hand.xml</filename>
+		<dofValues>-0.057882413 -0.30947655 1.4861901 1.4940492 0 -0.26691937 1.3064125 1.2594714 0 0.3307479 0.92836416 0.89793265 0 0.2306722 0.6653685 0.62207794 0 0.0924636 0.6939915 0.19389607 0.40777496 0.43294382</dofValues>
+		<transform>
+			<fullTransform>(1 0 0 0)[0 0 0]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>-2.21912 -6.21883 +479.86</position>
+		<orientation>+0 +0 +0 +1</orientation>
+		<focalDistance>+300.068</focalDistance>
+	</camera>
+</world>
