@@ -6,5 +6,5 @@ This brunch is labeling the grasptype of each intances.
 * We label the grasp type represented by the angles on the train set object, which is the extention of the hand-object representation based on [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp).
 * Finally we train the classification network using the modified pointnet network, the reason is to generate the grasp type (represented by angles of dexterous hand) on test set objects. The classification accuarcy is 95%. Run the following code:
 
-  python train_classify_grasp.py
+    python train_classify_grasp.py
 
