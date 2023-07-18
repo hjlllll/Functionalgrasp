@@ -1,1 +1,0 @@
-download 0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_one_grasptype20220118_downsampled_addhandpoints_normals_20220911.pkl at : https://drive.google.com/file/d/1hhPGqu1B71E85wF71elP_e0D0Fydv0ED/view?usp=drive_link
