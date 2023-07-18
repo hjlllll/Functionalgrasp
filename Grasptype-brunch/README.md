@@ -6,7 +6,7 @@ This brunch is labeling the grasp type of each instances.
           python map_to_shadow.py
 
 
-* We design a simple MLP network to obtain the dexterous angles :
+* We design a simple MLP network to obtain the dexterous angles, the dexterous hand grasp 33 taxonomy is in Functionalgrasp/result_xml/3grasptype :
  
           python train_ik_model.py
 
