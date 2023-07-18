@@ -14,7 +14,7 @@ have devoted more attention to stable grasp rather than functional grasp, which 
         conda activate functionalgrasp
         pip install torch==1.10.1 numpy==1.19.5 
 
-In this project, the grasp synthesis network is based on [KPConv](https://github.com/HuguesTHOMAS/KPConv-PyTorch/blob/master/INSTALL.md), and we use [GraspIt!](http://graspit-simulator.github.io/build/html/installation_linux.html) to view the results. Please configure the development environment according to the instructions in the links.
+In this project, the grasp synthesis dataset processing is based on [KPConv](https://github.com/HuguesTHOMAS/KPConv-PyTorch/blob/master/INSTALL.md), and we use [GraspIt!](http://graspit-simulator.github.io/build/html/installation_linux.html) to view the results. Please configure the development environment according to the instructions in the links.
 
 **Installation process:**
 * Download this code and unzip it. Note: 'cpp_wrappers', etc. are from [KPConv].
