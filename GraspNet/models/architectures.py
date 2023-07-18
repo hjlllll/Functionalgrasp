@@ -399,7 +399,7 @@ class KPCNN_G(nn.Module):
         pre_shapes = grasp_types.squeeze(1)#/1.57
         index = torch.tensor([1,4,7,10])
         pre_shapes[:,index] = 0
-        pre_shapes *= 0.0
+        # pre_shapes *= 0.0
         xo_global = xyz
         deta_angles = torch.zeros([xyz.shape[0],18], dtype=torch.float32).cuda()
 
@@ -440,10 +440,7 @@ class KPCNN_G(nn.Module):
         other_angles = self.head_other(other_object)
         other_angles = self.output_other(other_angles)
         deta_angles[::, :10] = other_angles[:][0]
-        # final_angles = pre_shapes + 0.00000000000000001 * deta_angles #* 0.2 + a
-        final_angles = pre_shapes + deta_angles #* 0.2 + a
-        # final_angles = pre_shapes + deta_angles * 0.1
-        # final_angles = deta_angles
+        final_angles = pre_shapes + deta_angles 
 
 
         return r, t, final_angles
