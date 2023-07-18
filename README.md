@@ -20,6 +20,7 @@ Installation process:
 * First, obtain the grasp type, which code is in **Grasptype_bruch**
 * Second, functional grasp synthesis, which code is in **GraspNet**
 
+## Citation
 If you find our work useful in your research, please consider citing:
 ```
 @article{zhang2023functionalgrasp,
