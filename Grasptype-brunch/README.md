@@ -1,6 +1,6 @@
 ## Introduction
 This brunch is labeling the grasp type of each instances.
-* In this project, we first obtain various grasp type from [Ganhand](https://github.com/enriccorona/GanHand) using MANO representation.
+* In this project, we first obtain various grasp type from [Ganhand](https://github.com/enriccorona/GanHand) using MANO representation : taxonomy.npy
 * Then we use the mapping method to obtain the dexterous hand key points using method same as [TeachNet](https://github.com/Smilels/TeachNet_Teleoperation) if vis:
    
           python map_to_shadow.py
