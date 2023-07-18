@@ -16,3 +16,8 @@ Installation process:
 
 * If your research continues to be based on the above two projects, please directly cite the original work.
 
+## Two stage 
+* First, obtain the grasp type, which code is in Grasptype_bruch
+* Second, functional grasp synthesis, which code is in GraspNet
+
+
