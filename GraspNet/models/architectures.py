@@ -103,15 +103,7 @@ def FK1(outputs_r,outputs_t,outputs_a):
 
 
     ##########################################
-                # outputs_rotation[:, 0:4] = outputs_a[:, 0:4]
-                # outputs_rotation[:, 4] = outputs_rotation[:, 3] * 0.8
-                # outputs_rotation[:, 6:9] = outputs_a[:, 4:7]
-                # outputs_rotation[:, 9] = outputs_rotation[:, 8] * 0.8
-                # outputs_rotation[:, 11:14] = outputs_a[:, 7:10]
-                # outputs_rotation[:, 14] = outputs_rotation[:, 13] * 0.8
-                # outputs_rotation[:, 16:19] = outputs_a[:, 10:13]
-                # outputs_rotation[:, 19] = outputs_rotation[:, 18] * 0.8
-                # outputs_rotation[:, 21:26] = outputs_a[:, 13:]
+               
                 fk = Shadowhand_FK()
                 outputs_FK = fk.run(outputs_base, outputs_rotation * 1.5708)
                 return outputs_FK
@@ -318,70 +310,11 @@ class KPCNN_G(nn.Module):
                 r *= 2
                 out_dim *= 2
                 block_in_layer = 0
-###################################################
-        # self.head_mlp = UnaryBlock(out_dim, 1024, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.head_softmax = UnaryBlock(1024, 512, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.head_r = UnaryBlock(512, 4, use_bn=False, bn_momentum=0, no_relu=True)
-        # self.head_t = UnaryBlock(512, 3, use_bn=False, bn_momentum=0, no_relu=True)
-        # self.head_a = UnaryBlock(512, 18, use_bn=False, bn_momentum=0, no_relu=True)
-        #
-        # ################
-        # # Network Losses
-        # ################
-        #
-        # self.criterion = torch.nn.MSELoss()
-        # self.deform_fitting_mode = config.deform_fitting_mode
-        # self.deform_fitting_power = config.deform_fitting_power
-        # self.deform_lr_factor = config.deform_lr_factor
-        # self.repulse_extent = config.repulse_extent
-        # self.output_loss = 0
-        # self.reg_loss = 0
-        # self.l1 = nn.L1Loss()
-        #
-        # ##########
-        # #new network
-        # ##########
-        # self.linear = nn.Linear(512,1024)
-        # self.finger_feature = Finger_feature(normal_channel=False)
-        # self.thumb_encoder = FingerEncoder(1024)
-        # self.index_encoder = FingerEncoder(1024)
-        # self.other_encoder = FingerEncoder(1024)
-        # self.baseline_encoder = FingerEncoder(1024)
-        #
-        # self.head_baseline= UnaryBlock(1024, 256, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.baseline_256t64 = UnaryBlock(256, 64, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.output_baseline = UnaryBlock(64, 18, use_bn=False, bn_momentum=0.1, no_relu=True)
-        #
-        # self.head_th = UnaryBlock(1024, 256, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.th_256t64 = UnaryBlock(256, 64, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.output_th = UnaryBlock(64, 5, use_bn=False, bn_momentum=0.1, no_relu=True)
-        #
-        # self.head_ind = UnaryBlock(1024, 256, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.ind_256t64 = UnaryBlock(256, 64, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # self.output_ind = UnaryBlock(64, 3, use_bn=False, bn_momentum=0.1, no_relu=True)
-        #
-        # self.head_other = UnaryBlock(1024, 256, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # # self.other_256t64 = UnaryBlock(256, 64, use_bn=False, bn_momentum=0, no_relu=False)
-        # self.output_other = UnaryBlock(256, 10, use_bn=False, bn_momentum=0.1, no_relu=True)
-        #
-        #
-        # #############
-        # ##pointnet++ssg
-        # #############
-        #
-        # in_channel = 3
-        # self.sa1 = PointNetSetAbstraction(npoint=512,radius=0.02,nsample=32,in_channel=in_channel,mlp=[64,64,128],group_all=False)
-        # self.sa2 = PointNetSetAbstraction(npoint=128,radius=0.04,nsample=64,in_channel=128+3,mlp=[125,125,256],group_all=False)
-        # self.sa3 = PointNetSetAbstraction(npoint=None, radius=None, nsample=None, in_channel=256 + 3, mlp=[256, 512, 1024], group_all=True)
 
-
-
-###############################
         self.head_mlp = UnaryBlock(out_dim, 1024, use_bn=True, bn_momentum=0.1, no_relu=False)
         self.head_r = UnaryBlock(1024, 512, use_bn=True, bn_momentum=0.1, no_relu=False)
         self.head_t = UnaryBlock(1024, 512, use_bn=True, bn_momentum=0.1, no_relu=False)
         self.head_a = UnaryBlock(1024, 512, use_bn=True, bn_momentum=0.1, no_relu=False)
-        # 输出层原来都是不用bn，False
         self.output_r = UnaryBlock(512, 4, use_bn=False, bn_momentum=0, no_relu=True)
         self.output_t = UnaryBlock(512, 3, use_bn=False, bn_momentum=0, no_relu=True)
         self.output_a = UnaryBlock(512, 18, use_bn=False, bn_momentum=0, no_relu=True)
@@ -443,98 +376,6 @@ class KPCNN_G(nn.Module):
         return
 
     def forward(self, batch, config):
-
-        # Save all block operations in a list of modules
-        # x = batch.features.clone().detach()#[b,n,19]
-        # # print("self.block_ops is:", self.block_ops)
-        #
-        # # Loop over consecutive blocks
-        # for block_op in self.block_ops:
-        #     x = block_op(x, batch)
-
-        # # Head of network
-        # x = self.head_mlp(x, batch)
-        # x = self.head_softmax(x, batch)
-        # r = self.head_r(x, batch)
-        # t = self.head_t(x, batch)
-        # a = self.head_a(x, batch)
-
-
-        # xyz = batch.down_points.clone().detach()
-        # B, _, _ = xyz.shape
-        # xyz = xyz.transpose(2,1)
-        # norm = None
-        # xyz = xyz[:, :3, :]
-        # l1_xyz, l1_points = self.sa1(xyz, norm)
-        # l2_xyz, l2_points = self.sa2(l1_xyz, l1_points)
-        # l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
-        # xyz = l3_points.view(B, 1024)
-        # # x = self.head_mlp(x, batch)
-        # xyz = self.head_softmax(xyz, batch)
-        # r = self.head_r(xyz, batch)
-        # t = self.head_t(xyz, batch)
-        # a = self.head_a(xyz, batch)
-        #
-        #
-        #
-        # r = r / (r.pow(2).sum(-1).sqrt()).reshape(-1, 1)
-        #
-        #
-        # '''
-        #     01-18 calculate the offset of preshape(angles of grasp type)
-        # '''
-        # xo_global =  self.linear(xyz)
-        # deta_angles = torch.zeros([xyz.shape[0],18], dtype=torch.float32).cuda()
-        # baseline_angles = torch.zeros([xyz.shape[0],18], dtype=torch.float32).cuda()
-        # output_fk1 = FK1(r/ 5.0 * 1000, t , deta_angles)
-        # thumb_pose = output_fk1[:, 22:28,:] #[b,6,3]
-        # thumb_feature = self.finger_feature(thumb_pose)
-        # xo_global = xo_global.unsqueeze(0)
-        # xo_global = xo_global.permute(1,2,0)
-        # th_object, _ = self.thumb_encoder(thumb_feature, xo_global)
-        # th_object = th_object.permute(0, 2, 1)#[B,1,1024]
-        #
-        # ########baseline######
-        # baseline_pose = output_fk1
-        # baseline_feature = self.finger_feature(baseline_pose)
-        # baseline_object,_  = self.baseline_encoder(baseline_feature, xo_global)
-        # baseline_object = baseline_object.permute(0,2,1)
-        # baseline_object = baseline_object.squeeze(1)
-        # ba_angles = self.head_baseline(baseline_object, baseline_object.shape[0])
-        # ba_angles = self.baseline_256t64(ba_angles)
-        # ba_angles = self.output_baseline(ba_angles, ba_angles.shape[0])
-        # baseline_angles[:,:] = ba_angles
-        # ##############################
-        #
-        # th_object = th_object.squeeze(1)
-        # th_angles = self.head_th(th_object, th_object.shape[0])
-        # th_angles = self.th_256t64(th_angles)
-        # th_angles = self.output_th(th_angles, th_angles.shape[0])
-        # deta_angles[:, 13:18] = th_angles
-        #
-        # output_fk2 = FK1(r/ 5.0 * 1000, t , deta_angles)
-        # index_pose = output_fk2[:, 18:22, :]
-        # index_feature = self.finger_feature(index_pose)
-        # ind_object, _ = self.index_encoder(index_feature, xo_global)
-        # ind_object = ind_object.permute(0, 2, 1)
-        # ind_object = ind_object.squeeze(1)
-        # ind_angles = self.head_ind(ind_object, ind_object.shape[0])
-        # ind_angles = self.ind_256t64(ind_angles)
-        # ind_angles = self.output_ind(ind_angles, ind_angles.shape[0])
-        #
-        # deta_angles[:, 10:13] = ind_angles
-        #
-        # output_fk3 = FK1(r/ 5.0 * 1000, t , deta_angles)
-        # other_pose = output_fk3[:, 1:17, :]
-        # other_feature = self.finger_feature(other_pose)
-        # other_object, _ = self.other_encoder(other_feature, xo_global)
-        # other_object = other_object.permute(0, 2, 1)
-        # other_object = other_object.squeeze(1)
-        # other_angles = self.head_other(other_object)
-        # other_angles = self.output_other(other_angles)
-        # deta_angles[:, :10] = other_angles[:][0]
-
-############################################3
         xyz = batch.down_points.clone().detach()
         # grasp_types = batch.label_news.clone().detach()
         # pre_shapes = grasp_types.squeeze(1)
@@ -547,13 +388,6 @@ class KPCNN_G(nn.Module):
         l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
         xyz = l3_points.view(B, 1024)
 
-        # x = self.drop1(F.relu(self.bn1(self.fc1(xyz))))
-        # x = self.drop2(F.relu(self.bn2(self.fc2(x))))
-        # r = self.fc_r(x)
-        # t = self.fc_t(x)
-
-
-        # x = self.head_mlp(x, batch)
         x_r = self.head_r(xyz, batch)
         r = self.output_r(x_r, batch)
         x_t = self.head_t(xyz, batch)
@@ -612,10 +446,7 @@ class KPCNN_G(nn.Module):
         # final_angles = deta_angles
 
 
-        # return r, t, deta_angles#attentiongrasp
         return r, t, final_angles
-        # return r, t, a ###basic
-        # return r,t, baseline_angles #baseline
 
     def loss(self, outputs, labels):
         """
