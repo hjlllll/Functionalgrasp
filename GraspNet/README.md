@@ -6,4 +6,4 @@
 
 * The results are in the folder './results', which can be viewed by directly using [GraspIt!], or copy all .xml files that you want to view to the 'your-graspit-root-dir/worlds/', and then run the following code :
 
-          python show_result.py
+          python utils/show_result.py
