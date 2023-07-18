@@ -1,5 +1,5 @@
 ## Introduction
-This brunch is labeling the grasp type of each instance. First need to download in [dataset] (https://drive.google.com/file/d/1VbnEJ7rNEAeAG8YJd7kF2I1SEHLdf7v0/view?usp=drive_link) and put in dataset_hjl/labeled_data/use/about_grasp/0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_withlabelgrasp-expanded-100-unsampled.pkl
+This brunch is labeling the grasp type of each instance. First need to download in [dataset](https://drive.google.com/file/d/1VbnEJ7rNEAeAG8YJd7kF2I1SEHLdf7v0/view?usp=drive_link) and put in dataset_hjl/labeled_data/use/about_grasp/0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_withlabelgrasp-expanded-100-unsampled.pkl
 
 * In this project, we first obtain 33 kinds of various grasp types from [Ganhand](https://github.com/enriccorona/GanHand) using MANO representation: taxonomy.npy
 * Then we use the mapping method to obtain the dexterous hand key points using the method same as [TeachNet](https://github.com/Smilels/TeachNet_Teleoperation) if vis:
