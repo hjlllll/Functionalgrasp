@@ -8,8 +8,6 @@ In this project, the grasp synthesis network is based on [KPConv](https://github
 Installation process:
 * Download this code and unzip it. Note: 'cpp_wrappers', etc. are from [KPConv].
 
-* [KPConv](https://github.com/HuguesTHOMAS/KPConv-PyTorch/blob/master/INSTALL.md): It is recommended to install the ubuntu version.
-
 * [GraspIt!](http://graspit-simulator.github.io/build/html/installation_linux.html): It is recommended to install the ubuntu version.
 
 * [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp): It is recommended to install the ubuntu version.
