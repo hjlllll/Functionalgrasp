@@ -17,7 +17,17 @@ Installation process:
 * If your research continues to be based on the above two projects, please directly cite the original work.
 
 ## Two stage 
-* First, obtain the grasp type, which code is in Grasptype_bruch
-* Second, functional grasp synthesis, which code is in GraspNet
+* First, obtain the grasp type, which code is in **Grasptype_bruch**
+* Second, functional grasp synthesis, which code is in **GraspNet**
 
+If you find our work useful in your research, please consider citing:
+```
+@article{zhang2023functionalgrasp,
+  title={FunctionalGrasp: Learning Functional Grasp for Robots via Semantic Hand-Object Representation},
+  author={Zhang, Yibiao and Hang, Jinglue and Zhu, Tianqiang and Lin, Xiangbo and Wu, Rina and Peng, Wanli and Tian, Dongying and Sun, Yi},
+  journal={IEEE Robotics and Automation Letters},
+  year={2023},
+  publisher={IEEE}
+}
+```
 
