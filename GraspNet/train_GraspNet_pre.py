@@ -40,7 +40,7 @@ from torch.utils.data import DataLoader
 from utils.config import Config
 from utils.trainer import ModelTrainer
 from utils.pre_trainer import ModelTrainer as pre_trainer
-from models.architectures import KPCNN_G
+from models.architectures_pre import KPCNN_G
 
 
 # ----------------------------------------------------------------------------------------------------------------------
