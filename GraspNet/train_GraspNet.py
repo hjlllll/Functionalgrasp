@@ -253,8 +253,8 @@ if __name__ == '__main__':
     # 若训练中断，改变previous_training_path为中断前模型所在文件夹，use_pretrain设为False使batch从中断位置开始
     #previous_training_path = 'A-pre-[gen_fea-loss123-ang-kp-c-a]-[new]'  # 'allloss-[pre-kp-c-a1]-[new]'
     use_pretrain = True
-    # previous_training_path='/home/GraspNet_kpconv/Graspnet-kpconv-hjl/results/Log_2022-09-12_12-08-09'
-    previous_training_path = ''
+    previous_training_path='/home/GraspNet_kpconv/Graspnet-kpconv-hjl/results/Log_2022-09-12_12-08-09'
+    # previous_training_path = ''
     # use_pretrain = False  # False决定batch是继续之前的，还是True=从0开始
 
     # Choose index of checkpoint to start from. If None, uses the latest chkp
