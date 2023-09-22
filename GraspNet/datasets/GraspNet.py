@@ -1,27 +1,3 @@
-#
-#
-#      0=================================0
-#      |    Kernel Point Convolutions    |
-#      0=================================0
-#
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Class handling GraspNet dataset.
-#      Implements a Dataset, a Sampler, and a collate_fn
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Hugues THOMAS - 11/06/2018
-#
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#           Imports and global variables
-#       \**********************************/
-#
-
 # Common libs
 import os
 from re import S
@@ -87,7 +63,7 @@ class GraspNetDataset(PointCloudDataset):
 
         # Type of task conducted on this dataset
         self.dataset_task = 'regression'
-        self.gripper_dim = 4 + 3 + 18  # 因为数据集中给了18位自由度，所以导入数据还是用了18
+        self.gripper_dim = 4 + 3 + 18  
         self.world_dim = 4 + 3
         self.label_max = 198
         self.all_labels = True
@@ -179,20 +155,13 @@ class GraspNetDataset(PointCloudDataset):
                 label = self.get_grasp_label(self.input_labels[p_i], random=False, all_labels=self.all_labels).astype(
                     np.float32)
                 graspparts = self.input_features[p_i].astype(np.float32)[:, :16]
-            else:
-                label = self.input_labels[p_i][p_j].reshape(1, -1)
-                # label = np.array([[1,0,0,0, 0,0,0, 0,0,0,1.5708,0,0,0,0,0,0,0,0,0,0,0,0,0,0]])
-                # write_xml(self.grasp_obj_name[p_i], label[0, :4], label[0, 4:7] * 1000.0, label[0, 7:], path='/home/lm/graspit/worlds/{}_{}.xml'.format(p_i, p_j))
-                graspparts, kp_label = self.generate_feature(points, label, is_show=False)
-                tk_list += [kp_label]
 
             # print(points.dtype, label.dtype, graspparts.dtype)
             # print(points.shape, label.shape, graspparts.shape)
 
             # Data augmentation #数据扩充
             points, label, tran, R = self.augmentation_grasp(points, label, is_norm=True, verbose=False,
-                                                             is_aug=self.config.is_aug)  # # ①目前只能做平移????????　②kp_label没有加入==========================================================?????????????????
-
+                                                             is_aug=self.config.is_aug)  # # ①目前只能做平移????????　②kp_label没有加入======
             # Stack batch
             tp_list += [points]
             tf_list += [graspparts]
@@ -341,26 +310,6 @@ class GraspNetDataset(PointCloudDataset):
         if exists(filename_pkl):
             with open(filename_pkl, 'rb') as file:
                 if use_seg_data:
-                    # new_filename_pkl = '/home/GraspNet_kpconv/Data/labeled_data2/use/about_grasp/' \
-                    #            '0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_one_grasptype20220118_downsampled_addhandpoints_normals.pkl'
-                    # with open(new_filename_pkl, 'rb') as new_file:
-                    #     a, b, c, d, e, label_new_ori, down_point_ori, down_point_2048_ori, hand_point_ori, normal_ori = pickle.load(
-                    #     new_file)
-                    # input_points, input_features, input_labels, num_samples, grasp_obj_name = pickle.load(file)
-                    # label_new, down_point, down_point_2048, hand_point, normal = [], [], [], [], []
-                    # idx = 100
-                    # for i in range(len(input_points)):
-                    #     label_new.append(label_new_ori[idx])
-                    #     down_point.append(down_point_ori[idx])
-                    #     down_point_2048.append(down_point_2048_ori[idx])
-                    #     hand_point.append(hand_point_ori[idx])
-                    #     normal.append(normal_ori[idx])
-
-                        # for j in range(input_features[i].shape[0]):
-                        #     if 1 in input_features[i][j]:
-                        #         input_features[i][j] = np.array([1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0])
-                        # input_points[i] = self.rotate_point_cloud(input_points[i])
-
                     input_points, input_features, input_labels, num_samples, grasp_obj_name, label_new, down_point, down_point_2048, hand_point, normal = pickle.load(
                         file)
 
@@ -382,11 +331,6 @@ class GraspNetDataset(PointCloudDataset):
                         # viewer.add_geometry(pcd)
                         # viewer.run()
                     print('finish chosing...')
-
-                    # input_points, input_features, input_labels, num_samples, grasp_obj_name = pickle.load(file)
-                else:
-                    input_points, input_labels, num_samples, grasp_obj_name = pickle.load(file)
-                    input_features = []
                 print(len(input_points), len(input_labels), len(grasp_obj_name))
                 # print(input_points[3].shape, input_labels[3].shape, grasp_obj_name[3])
 
@@ -470,60 +414,6 @@ class GraspNetDataset(PointCloudDataset):
                         input_labels += [label_array]
                         grasp_obj_name.append(name)
 
-
-            else:  # 预训练
-                for name in data_mask:
-                    grasp_obj_name.append(name)
-                    label_array = np.zeros((label_max, self.gripper_dim))
-
-                    # Read points
-                    if not os.path.exists(self.config.objectEX_dir):
-                        raise ('The specified folder(objectEX_dir) does not exist')
-                    if use_expand_data:
-                        grasp_obj_path = join(self.config.objectEX_dir, name + '_scaled.obj.smoothed_expand')
-                        grasp_obj_path = glob.glob(grasp_obj_path + '*')
-                        if len(grasp_obj_path) > 1:
-                            raise ('grasp_obj_path is not alone')
-                        elif len(grasp_obj_path) == 0:
-                            raise ('grasp_obj_path is not find')
-                        verts = np.loadtxt(grasp_obj_path[0], dtype=np.float32) / 1000.0
-                    else:
-                        if not os.path.exists(self.config.object_dir):
-                            raise ('The specified folder(object_dir) does not exist')
-                        grasp_obj_path = join(self.config.object_dir, name + '_scaled.obj.smoothed' + '.off')
-                        file = open(grasp_obj_path, 'r')
-                        if 'OFF' != file.readline().strip():
-                            raise ('Not a valid OFF header')
-                        n_verts, n_faces, n_dontknow = tuple([int(s) for s in file.readline().strip().split(' ')])
-                        verts = [[float(s) for s in file.readline().strip().split(' ')] for i_vert in range(n_verts)]
-                        verts = np.asarray(verts).astype(np.float32) / 1000.0
-
-                    # Subsample them
-                    if self.config.first_subsampling_dl > 0:
-                        points = grid_subsampling(verts[:, :3],
-                                                  features=None,  # # 如果分割特征也参与进来，则此处以及函数输出要相应变化
-                                                  sampleDl=self.config.first_subsampling_dl)
-                    else:
-                        points = verts[:, :3]
-
-                    frame_id += 1
-
-                    # Read label 读取label
-                    label_array, graspxml_num = self.load_label(label_array, name, fmt_str, frame_id, progress_n, N,
-                                                                label_max, i_max)
-
-                    # Add to list
-                    input_points += [points]
-                    # input_feature += [feature]
-                    if (label_array[-1] == 0).all():
-                        print('\n', name, ' : ', graspxml_num)
-                        raise ('Get a invalid label')
-                    input_labels += [label_array]
-
-                    # print(len(input_points), len(input_labels), len(grasp_obj_name))
-                    # print(input_points[graspobj_num].shape, input_labels[graspobj_num].shape)
-                    # print(grasp_obj_name[graspobj_num])
-
             print('', end='\r')
             print(fmt_str.format('#' * progress_n, 100), end='', flush=True)
             print()
@@ -551,7 +441,7 @@ class GraspNetDataset(PointCloudDataset):
         if use_seg_data:
             val_idx = np.array(
                 [4, 5, 8, 9, 17, 18, 27, 32, 35, 43, 45, 49, 53, 57, 60, 62, 68, 73, 74, 82, 87, 90, 101, 107,
-                 113])  # 原始数据中验证集物体的编号
+                 113])  # 验证集物体的编号，待定
             print(self.mode)
             if self.mode == 'train':
                 data_idx = np.setdiff1d(np.arange(len(grasp_obj_name)), val_idx)
@@ -650,93 +540,6 @@ class GraspNetDataset(PointCloudDataset):
                 label = labels[0].reshape(1, -1)
         # print(labels_len, label_idx, type(label_idx))
         return label
-
-    def generate_feature(self, points, label, is_show=False):  # 目前看效果不如上一代
-        """
-        说明：除了指定的区域，其余区域都设置为不可接触点，即没有无约束区域
-        :param points: 点数×3
-        :param label: 1×(4+3+18)
-        :return: feature: 点数×16
-        """
-        points = torch.from_numpy(points).float() * 1000.0
-        label = torch.from_numpy(label).float()
-        base = torch.cat([label[:, 4:7] * 1000.0, label[:, :4]], 1)
-        # 针对实际shandow修改
-        angle = label[:, 7:25]
-        rotations = torch.zeros([angle.shape[0], 27]).type_as(angle)
-        # 20210706:因为graspit中shadowhand模型和运动学与真实手不一致，因此与预训练fk_cpu.py用的模型存在不同，
-        #          目前有两种策略（详见onenote）：①网络预测指尖两关节和，两处模型不同，让他猜；②网络分别预测两关节，用loss进行约束。
-        # rotations[:, 0:3] = angle[:, 0:3]
-        # rotations[:, 3] = angle[:, 3] / 1.8
-        # rotations[:, 4] = 0.8 * angle[:, 3] / 1.8
-        # rotations[:, 6:8] = angle[:, 4:6]
-        # rotations[:, 8] = angle[:, 6] / 1.8
-        # rotations[:, 9] = 0.8 * angle[:, 6] / 1.8
-        # rotations[:, 11:13] = angle[:, 7:9]
-        # rotations[:, 13] = angle[:, 9] / 1.8
-        # rotations[:, 14] = 0.8 * angle[:, 9] / 1.8
-        # rotations[:, 16:18] = angle[:, 10:12]
-        # rotations[:, 18] = angle[:, 12] / 1.8
-        # rotations[:, 19] = 0.8 * angle[:, 12] / 1.8
-        # rotations[:, 21:26] = angle[:, 13:]
-        rotations[:, 0:4] = angle[:, 0:4]
-        rotations[:, 4] = 0.8 * angle[:, 3]
-        rotations[:, 6:9] = angle[:, 4:7]
-        rotations[:, 9] = 0.8 * angle[:, 6]
-        rotations[:, 11:14] = angle[:, 7:10]
-        rotations[:, 14] = 0.8 * angle[:, 9]
-        rotations[:, 16:19] = angle[:, 10:13]
-        rotations[:, 19] = 0.8 * angle[:, 12]
-        rotations[:, 21:26] = angle[:, 13:]
-        fk_np = Shadowhand_FK_cpu()
-        j_pp = fk_np.run(base, rotations)  # # [1,J+1+15,3], n is number of label
-        k_p_label = j_pp[:, :28]
-        # print(j_p.shape)
-        # # # 使用指肚
-        # j_p = j_pp[:, 28:]
-        # j_p = j_p[:, [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]]
-        # #　使用关节点
-        j_p = j_pp[:, [27, 26, 25, 21, 20, 19, 16, 15, 14, 11, 10, 9, 6, 5, 4]]
-        distance = (((points.unsqueeze(1).expand(-1, j_p.shape[1], -1) - j_p.expand(points.shape[0], -1, -1)) ** 2).sum(
-            -1).sqrt()).numpy()  # [点云个数, 关键点数15]
-        mask_inf = distance <= 16
-        mask_inf = np.concatenate([mask_inf, np.array([False]).repeat(mask_inf.shape[0]).reshape(-1, 1)], 1)
-
-        # # make feature0(若局部相连，则同化置1)
-        unique = np.unique(mask_inf, axis=0)
-        mask_overlap = np.where(unique.sum(1) > 1)[0]
-        mask_overlap = np.repeat(mask_overlap.reshape(1, -1), mask_overlap.shape[0], axis=0).reshape(-1).tolist()
-        for row in mask_overlap:
-            column = np.where(unique[row] == 1)[0].tolist()
-            mask_inf[:, column] = mask_inf[:, column].sum(1).reshape(-1, 1).repeat(len(column), axis=1)
-        mask_inf = mask_inf.astype(np.bool)
-        feature = np.zeros([points.shape[0], 16]).astype(distance.dtype)
-        feature[mask_inf] = 1
-
-        # # 20210108无约束互补区域设置出现几率，以增加数据多样性
-        ratio = np.random.rand()
-        if ratio <= 0.8:  # 采用无约束互补区域 uncontactable & other_tip_touch
-            # # make feature1(指定无约束区域，设为互补的全1)
-            feature = np.zeros([points.shape[0], 16]).astype(distance.dtype)
-            inf_filter_r = ~mask_inf.sum(1).astype(np.bool).reshape(-1, 1)
-            inf_filter_c = ~mask_inf.sum(0).astype(np.bool)
-            mask_sup = distance <= 60
-            mask_sup = mask_sup.sum(1).astype(np.bool).reshape(-1, 1) * (feature == 0)
-            if ratio <= 0.3:  # 互补区域采用指尖接触 other_tip_touch
-                tip_mask = np.array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0]).astype(np.bool)
-                mask_sup = (mask_sup * inf_filter_r) * (inf_filter_c * tip_mask)
-                feature[mask_inf + mask_sup] = 1
-            else:  # 互补区域采用互补关键点 uncontactable
-                mask_sup = (mask_sup * inf_filter_r) * inf_filter_c
-                feature[mask_inf + mask_sup] = 1
-
-        # # 20210108修改腕点特征，全置为0
-        feature[:, -1] = 0
-
-        if is_show:
-            show_data(points, feature, j_pp)
-
-        return feature, k_p_label.numpy().reshape(1, -1)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -1239,202 +1042,3 @@ class GraspNetCustomBatch:
 
 def GraspNetCollate(batch_data):
     return GraspNetCustomBatch(batch_data)
-
-
-# Debug
-class GraspnetConfig(Config):
-    """
-    Override the parameters you want to modify for this dataset
-    """
-
-    ####################
-    # Dataset parameters
-    ####################
-
-    # Dataset name
-    dataset = 'GraspNet'
-
-    # Number of classes in the dataset (This value is overwritten by dataset class when Initializating dataset).
-    num_classes = None
-
-    # Type of task performed on this dataset (also overwritten)
-    dataset_task = ''
-
-    # Number of CPU threads for the input pipeline
-    input_threads = 10
-
-    #########################
-    # Architecture definition
-    #########################
-
-    # Define layers
-    architecture = ['simple',
-                    'resnetb',
-                    'resnetb_strided',
-                    'resnetb',
-                    'resnetb',
-                    'resnetb_strided',
-                    'resnetb',
-                    'resnetb',
-                    'resnetb_strided',
-                    'resnetb',
-                    'resnetb',
-                    'resnetb_strided',
-                    'resnetb',
-                    'resnetb',
-                    'global_average']
-
-    ###################
-    # KPConv parameters
-    ###################
-
-    # Number of kernel points
-    num_kernel_points = 15
-
-    # Size of the first subsampling grid in meter
-    first_subsampling_dl = 0.002
-
-    # Radius of convolution in "number grid cell". (2.5 is the standard value)  # ratio of rigid kp,固定核的卷积球半径相比方格采样尺寸的比例
-    conv_radius = 2.5
-
-    # Radius of deformable convolution in "number grid cell". Larger so that deformed kernel can spread out  # ratio of deformable kp,形变核的卷积球半径相比方格采样尺寸的比例
-    deform_radius = 6.0
-
-    # Radius of the area of influence of each kernel point in "number grid cell". (1.0 is the standard value)  # The kernel points influence distance，每个核点的影响范围
-    KP_extent = 1.2
-
-    # Behavior of convolutions in ('constant', 'linear', 'gaussian')
-    KP_influence = 'linear'
-
-    # Aggregation function of KPConv in ('closest', 'sum')
-    aggregation_mode = 'sum'
-
-    # Choice of input features
-    first_features_dim = 128  # Dimension of the first feature maps, for out_dim
-    in_features_dim = 16  # Dimension of input features, == in_dim; 1, 4, 20
-    num_classes = 4 + 3 + 18  # the last output dim, old:4 + 3 + 18 -> new:4 + 3 + 17
-
-    # Can the network learn modulations  # choose if kernel weights are modulated in addition to deformed 选择是否除变形外还调制内核权重
-    modulated = True
-
-    # Batch normalization parameters
-    use_batch_norm = True
-    batch_norm_momentum = 0.05
-
-    # Deformable offset loss
-    # 'point2point' fitting geometry by penalizing distance from deform point to input points
-    # 'point2plane' fitting geometry by penalizing distance from deform point to input point triplet (not implemented)
-    deform_fitting_mode = 'point2point'
-    deform_fitting_power = 1.0  # Multiplier for the fitting/repulsive loss
-    deform_lr_factor = 0.1  # Multiplier for learning rate applied to the deformations
-    repulse_extent = 1.2  # Distance of repulsion for deformed kernel points
-
-    #####################
-    # Training parameters
-    #####################
-
-    # Maximal number of epochs
-    max_epoch = 1020  # 2018
-
-    # Learning rate management
-    learning_rate = 1e-2
-    # momentum = 0.98
-    lr_decays = {i: 0.1 ** (1 / 500) for i in range(1, max_epoch)}
-    grad_clip_norm = 100.0
-
-    # Number of batch
-    batch_num = 10
-
-    # Number of steps per epochs
-    epoch_steps = 500
-
-    # Number of validation examples per epoch
-    validation_size = 20
-
-    # Number of epoch between each checkpoint
-    checkpoint_gap = 100
-
-    # Augmentations
-    is_aug = False
-    augment_scale_anisotropic = False  # anisotropic:各向异性
-    augment_symmetries = [False, False, False]
-    augment_rotation = 'none'
-    augment_scale_min = 1.0
-    augment_scale_max = 1.0
-    augment_trans = 0.000  # 0.05
-    augment_noise = 0.000  # 0.001
-
-    # The way we balance segmentation loss
-    #   > 'none': Each point in the whole batch has the same contribution.
-    #   > 'class': Each class has the same contribution (points are weighted according to class balance)
-    #   > 'batch': Each cloud in the batch has the same contribution (points are weighted according cloud sizes)
-    segloss_balance = 'none'
-
-    # Do we nee to save convergence
-    saving = True
-    saving_path = '/home/GraspNet_kpconv/Graspnet-kpconv-hjl/results_seg'
-
-    # dataset imformation
-    object_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/good_shapes'
-    grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/grasps'
-    objectEX_dir = r'../Data/expand_all'  # 在预训练时使用，因为预训练使用的是全部物体
-    object_label_dir = r'/home/GraspNet_kpconv/Data/labeled_data2/use'
-    print(object_label_dir)
-
-    # grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/ggg'
-    use_expand_data = True
-    use_seg_data = True
-
-    is_pretrain = False  # 如果要预训练，则该参数设为True，然后再依据提示去修改后面的previous_training_path 和 use_pretrain
-    if is_pretrain:
-        use_seg_data = False
-
-    if use_seg_data:
-        use_expand_data = True
-
-    specify_dataset = True
-    if specify_dataset:
-        # 以训练、验证和测试为关键字的字典，每项中包含该集的名称，以及use_seg_data的取值，
-        if is_pretrain:
-            dataset_names = {
-                # '索引': ['自定义或已生成的pkl文件名', use_seg_data值, object_label_dir值]
-                'train': ['0.002_s420_465-100_ex-True_seg-False_train_record.pkl', False, r'../Data/for_pretrain'],
-                'val': ['0.002_s420_465-100_ex-True_seg-False_val_record.pkl', False, r'../Data/for_pretrain']}
-        else:
-            dataset_names = {
-                # '索引': ['自定义或已生成的pkl文件名', use_seg_data值, object_label_dir值]
-                'train': ['0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new.pkl', True,
-                          r'/home/GraspNet_kpconv/Data/labeled_data2/use'],
-                # 0.002_s420_465-100_ex-True_label-True_train_record-is11111
-                # 'train': ['0.002_s420_465-100_ex-True_seg-False_train_record.pkl', False, r'../Data/labeled_data2/use'],  # 0.002_s420_465-100_ex-True_label-True_train_record-is11111
-                'val': ['0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new.pkl', True,
-                        r'/home/GraspNet_kpconv/Data/labeled_data2/use'],
-                # 0.002_s420_465-100_ex-True_label-True_train_record-no11111
-                'test': ['0.002_s420_465-100_ex-True_seg-True_val_record.pkl', True,
-                         r'/home/GraspNet_kpconv/Data/labeled_data2/use'],
-                'new': ['0.002_new.pkl', True, r'/home/GraspNet_kpconv/Data/new0/seg_label']}
-
-    num_objects = 565
-    train_size = 465  # 465
-    test_size = 100  # 如果test_size + train_size == num_objects, 则验证集为测试集
-    val_size = num_objects - train_size - test_size  # if val_size==0, 则自动将test设为验证集
-    seed = 420
-
-
-if __name__ == '__main__':
-    config = GraspnetConfig()
-
-    training_dataset = GraspNetDataset(config, mode='train')
-
-    # Get path from argument if given
-    if len(sys.argv) > 1:
-        config.saving_path = sys.argv[1]
-    training_sampler = GraspNetSampler(training_dataset, use_potential=False)
-    training_loader = DataLoader(training_dataset,
-                                 batch_size=1,
-                                 sampler=training_sampler,
-                                 collate_fn=GraspNetCollate,
-                                 num_workers=config.input_threads,
-                                 pin_memory=True)
-    for i, batch in enumerate(training_loader):
-        print(batch)
