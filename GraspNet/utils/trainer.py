@@ -1,27 +1,3 @@
-#
-#
-#      0=================================0
-#      |    Kernel Point Convolutions    |
-#      0=================================0
-#
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Class handling the training of any model
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Hugues THOMAS - 11/06/2018
-#
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#           Imports and global variables
-#       \**********************************/
-#
-
-
 # Basic libs
 # from functools import cache
 import torch
@@ -251,7 +227,6 @@ class ModelTrainer:
                 loss2 = net.loss(outputs_t, label_[:, 4:7])
                 loss3 = net.loss(outputs_a, label_[:, 7:])
 
-                # outputs_r, outputs_t, outputs_a = label_[:, :4], label_[:, 4:7], label_[:, 7:]  # # 训练的时候一定要注释掉啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
                 # # 输入正向运动学层
                 # 正则化
                 outputs_r = outputs_r / (outputs_r.pow(2).sum(-1).sqrt()).reshape(-1, 1)
@@ -259,9 +234,6 @@ class ModelTrainer:
                 outputs_base = torch.cat((outputs_t / 5.0 * 1000, outputs_r), 1)
                 # 17(18) -> 27(J)
                 outputs_rotation = torch.zeros([outputs_a.shape[0], 27]).type_as(outputs_a)  # .cuda()
-                # 20210706:因为graspit中shadowhand模型和运动学与真实手不一致，因此与预训练fk_cpu.py用的模型存在不同，
-                #          目前有两种策略（详见onenote）：①网络预测指尖两关节和，两处模型不同，让他猜；②网络分别预测两关节，用loss进行约束。
-                ####################################3
                 outputs_rotation[:, 0:3] = outputs_a[:, 0:3]
                 angle_2_pair = torch.ones([2, outputs_a.shape[0]]).cuda()
                 angle_1_pair = torch.zeros([2, outputs_a.shape[0]]).cuda()
@@ -284,25 +256,9 @@ class ModelTrainer:
                 angle_1_pair[0] = outputs_a[:, 12] - 1
                 outputs_rotation[:, 18] = torch.min(angle_2_pair, 0)[0]
                 outputs_rotation[:, 19] = torch.max(angle_1_pair, 0)[0]
-                outputs_rotation[:, 21:26] = outputs_a[:, 13:]  # all
-                #########################
-                # outputs_rotation[:, 0:4] = outputs_a[:, 0:4]
-                # outputs_rotation[:, 4] = outputs_rotation[:, 3] * 0.8
-                # outputs_rotation[:, 6:9] = outputs_a[:, 4:7]
-                # outputs_rotation[:, 9] = outputs_rotation[:, 8] * 0.8
-                # outputs_rotation[:, 11:14] = outputs_a[:, 7:10]
-                # outputs_rotation[:, 14] = outputs_rotation[:, 13] * 0.8
-                # outputs_rotation[:, 16:19] = outputs_a[:, 10:13]
-                # outputs_rotation[:, 19] = outputs_rotation[:, 18] * 0.8
-                # outputs_rotation[:, 21:26] = outputs_a[:, 13:]  # all
-
+                outputs_rotation[:, 21:26] = outputs_a[:, 13:]
                 fk = Shadowhand_FK()
-                outputs_FK = fk.run(outputs_base, outputs_rotation * 1.5708)  # [F, J+10, 3]  #原始J+1个关键点，加上10个关键点
-                if debug:
-                    jj_p = outputs_FK[:,
-                           :28]  # [F, 10, 3]  # # 训练的时候一定要注释掉啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
-                    app = QtGui.QApplication(
-                        [])  # # 训练的时候一定要注释掉啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
+                outputs_FK = fk.run(outputs_base, outputs_rotation * 1.5708)  # [F, J+10, 3] 
 
                 # # 手自碰撞约束loss_handself
                 # 中指尖与其他指尖
@@ -417,21 +373,7 @@ class ModelTrainer:
                     # batch_features_away[pi, :batch.lengths[0][pi]] = batch.features[i_begin:i_begin+batch.lengths[0][pi], [0+4,0+4,1+4,2+4,3+4,3+4,4+4,5+4,6+4,6+4,7+4,8+4,9+4,9+4,10+4,11+4,12+4,12+4,13+4,14+4,15+4]]  #扩展16位编码至21位
                     batch_features_away[pi] = (batch_features_away[pi] - 1) ** 2
                     i_begin = i_begin + batch.lengths[0][pi]
-                    # if debug:
-                    #     # # 训练的时候一定要注释掉啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
-                    #     ppoints = batch.points[0][i_begin:i_begin + batch.lengths[0][pi]] * 1000
-                    #     print('ppoints.shape', ppoints.shape)
-                    #     ggrasppart = batch.features[i_begin:i_begin + batch.lengths[0][pi], fetures_mask]
-                    #     print('ggrasppart.shape', ggrasppart.shape)
-                    #     jj_pp = jj_p[pi]
-                    #     print('jj_pp.shape', jj_pp.shape, 'jj_p.shape', jj_p.shape)
-                    #     with open('grasp_obj_name_train.data', 'rb') as filehandle:
-                    #         ggrasp_obj_name = pickle.load(filehandle)
-                    #         print('object_idx&name:', pi, '--', ggrasp_obj_name[batch.model_inds[pi]])
-                    #     llabel = label_[pi].clone().detach().cpu().numpy()
-                    #     write_xml(ggrasp_obj_name[batch.model_inds[pi]], llabel[:4], llabel[4:7] / 5.0 * 1000.0, llabel[7:] * 1.5708, path='/home/lm/graspit/worlds/{}.xml'.format(pi), mode='train', rs=(21, 'pretrain_single'))
-                    #     rewrite_xml('/home/lm/graspit/worlds/{}.xml'.format(pi))
-                    #     show_data_fast(ppoints, ggrasppart, jj_pp, pi=None, show_jp=True)
+
 
                 batch_distance = ((batch_points.unsqueeze(2).expand(-1, -1, outputs_FK.shape[1],
                                                                     -1) - outputs_FK.unsqueeze(1).expand(-1,
@@ -439,11 +381,11 @@ class ModelTrainer:
                                                                                                              1], -1,
                                                                                                          -1)) ** 2).sum(
                     -1).sqrt()  # [F, 20000, ?]
-                batch_dis_close = batch_distance[:, :, [27, 21, 16, 11, 6]] * batch_features_close  # 20210707多了个关节，序号变动
-                # batch_dis_close = batch_distance[:, :, [27,26,24,21,20,19,16,15,14,11,10,9,6,5,4,1]] * batch_features_close  # 20210707多了个关节，序号变动
+                batch_dis_close = batch_distance[:, :, [27, 21, 16, 11, 6]] * batch_features_close 
+                # batch_dis_close = batch_distance[:, :, [27,26,24,21,20,19,16,15,14,11,10,9,6,5,4,1]] * batch_features_close 
                 batch_dis_away = batch_distance[:, :,
                                  [27, 26, 24, 23, 21, 20, 19, 18, 16, 15, 14, 13, 11, 10, 9, 8, 6, 5, 4, 3,
-                                  0]] * batch_features_away  # 20210707多了个关节，序号变动
+                                  0]] * batch_features_away 
                 batch_dis_close[batch_features_close == 0] = float("inf")
                 batch_dis_away[batch_features_away == 0] = float("inf")
 
@@ -464,8 +406,7 @@ class ModelTrainer:
                      60]).cuda() + 5) / (torch.min(batch_dis_away, -2)[0] + 0.01))  # # 还未跑--编号a5
                 loss_away = torch.tensor(
                     [1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 5]).cuda() * loss_away
-                # loss_away = torch.log2((torch.tensor([10, 10, 15, 20, 10, 10, 15, 20, 10, 10, 15, 20, 10, 10, 15, 20, 10, 10, 15, 20,40]).cuda() + 5) / (torch.min(batch_dis_away, -2)[0] + 0.01))  # # 还未跑--编号a5
-                # loss_away = torch.tensor([1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1]).cuda() * loss_away
+ 
                 loss_away[loss_away <= 0] = 0
                 loss_away = loss_away.sum() / batch_dis_away.shape[0]
                 ########################################3
@@ -886,7 +827,7 @@ class ModelTrainer:
         print('Finished Training')
         return
 
-    # Validation methods ，目前的验证方法是和稳定抓取的标签做对比，即预训练的验证，后续开源代码应该去掉
+    # Validation methods ，目前的验证方法是和稳定抓取的标签做对比，没有价值，后续开源代码应该去掉
     # ------------------------------------------------------------------------------------------------------------------
 
     def validation(self, net, val_loader, config: Config, results_path, epoch=None):
@@ -979,23 +920,6 @@ class ModelTrainer:
             outputs_rotation[:, 18] = torch.min(angle_2_pair, 0)[0]
             outputs_rotation[:, 19] = torch.max(angle_1_pair, 0)[0]
             outputs_rotation[:, 21:26] = outputs_a[:, 13:]  # all
-            ################################################33
-            # outputs_rotation[:, 0:3] = outputs_a[ :, 0:3]
-            # outputs_rotation[:,3] = outputs_a[:,3]
-            # outputs_rotation[:,4] = 0.8*outputs_a[:,3]
-            #
-            # outputs_rotation[ :, 6:8] = outputs_a[ :, 4:6]
-            # outputs_rotation[ :, 8] = outputs_a[ :, 6]
-            # outputs_rotation[ :, 9] = 0.8*outputs_a[ :, 6]
-            #
-            # outputs_rotation[ :, 11:13] = outputs_a[ :, 7:9]
-            # outputs_rotation[ :, 13] = outputs_a[ :, 9]
-            # outputs_rotation[ :, 14] = 0.8*outputs_a[ :, 9]
-            #
-            # outputs_rotation[ :, 16:18] = outputs_a[ :, 10:12]
-            # outputs_rotation[ :, 18] = outputs_a[ :, 12]
-            # outputs_rotation[ :, 19] = 0.8*outputs_a[ :, 12]
-            # outputs_rotation[ :, 21:26] = outputs_a[ :, 13:]
             fk = Shadowhand_FK()
             outputs_FK = fk.run(outputs_base, outputs_rotation * 1.5708)
             outputs_FK = outputs_FK[:, :28]
