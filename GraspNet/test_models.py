@@ -1,26 +1,3 @@
-#
-#
-#      0=================================0
-#      |    Kernel Point Convolutions    |
-#      0=================================0
-#
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Callable script to start a training on ModelNet40 dataset
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Hugues THOMAS - 06/03/2020
-#
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#           Imports and global variables
-#       \**********************************/
-#
-
 # Common libs
 import signal
 import os
@@ -38,12 +15,6 @@ from utils.tester import ModelTester
 from models.architectures import KPCNN_G, KPFCNN
 from train_GraspNet import GraspnetConfig
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#           Main Call
-#       \***************/
-#
 
 def model_choice(chosen_log):
 
@@ -94,15 +65,6 @@ if __name__ == '__main__':
     #
     #       > 'last_XXX': Automatically retrieve the last trained model on dataset XXX
     #       > '(old_)results/Log_YYYY-MM-DD_HH-MM-SS': Directly provide the path of a trained model
-
-    # # ===================================================== - Seg - ========================================================
-    # mode_set = 'training'
-    # mode_set = 'val'
-    mode_set = 'new'
-    # chosen_log = 'results_seg/Log_2021-01-26_16-41-51-[bz11]'
-    # chosen_log = '/media/ztq/new/ubuntu/ubuntu/Grasp/results_seg/Log_2021-02-01_02-35-10-[w0201-pl-c6]'
-    chosen_log = '/home/GraspNet_kpconv/Graspnet-kpconv-hjl/results/Log_2022-09-14_06-47-59'
-    # chosen_log = '/media/ztq/new/ubuntu/ubuntu/Grasp/results_seg/Log_2021-01-29_15-57-43-[p0129-pl-c3]'
 
     # # # ===================================================== - Grasp - ========================================================
     # mode_set = 'new'  # 'val' 'new'
