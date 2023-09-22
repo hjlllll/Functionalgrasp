@@ -148,7 +148,7 @@ class Shadowhand_FK(object):
     def run(self, base, rotations, ass_idx=(0,1,2,3)):  # base:[F,1,3], rotations:[F,J,4]
         self.device = base.device
         # # ↓ 28个关键点所对应的运动链父结点
-        parents = [-1, 0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 0, 12, 13, 14, 15, 0, 17, 18, 19, 20, 0, 22, 23, 24, 25, 26]   # 依据graspit!中shadowhand_simple顺序,图见OneNote-学习笔记-机器人学-坐标变换-shadowhand
+        parents = [-1, 0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 0, 12, 13, 14, 15, 0, 17, 18, 19, 20, 0, 22, 23, 24, 25, 26]
         M_sh = np.load(self.npy_dir+'/M_shadowhand.npy')  # 加载shadowhand的运动学关系
         M_sh = torch.from_numpy(M_sh).float()
         # print(M_sh.shape)
