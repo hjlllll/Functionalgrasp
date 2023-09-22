@@ -231,7 +231,7 @@ class GraspNetDataset(PointCloudDataset):
 
         return input_list
 
-    def get_object_information(self, object_dir):  # # 遍历物体数据集文件夹，获取所有物体的名字
+    def get_object_information(self, object_dir):
         # obiect_size = 0
         object_names = []
         # for root, dirs, files in os.walk(self.object_dir, topdown=False):
@@ -366,7 +366,7 @@ class GraspNetDataset(PointCloudDataset):
 
             frame_id = 0
             if use_seg_data:
-                for labeled_data in sorted(os.listdir(self.config.object_label_dir)):  # # 在标注的抓取分割数据集中遍历
+                for labeled_data in sorted(os.listdir(self.config.object_label_dir)):
                     if labeled_data.endswith('.npy'):  # os.path.splitext(name)[1] == '.xml': #取出 touch code
                         labeled_verts = np.load(join(self.config.object_label_dir, labeled_data))
                         verts = labeled_verts[:, :3].astype(np.float32) / 1000.0  # points
@@ -489,7 +489,7 @@ class GraspNetDataset(PointCloudDataset):
                         # print('wrong file')
                         continue
 
-                    grip = np.zeros(self.gripper_dim)  # # 在生成的抓取数据集文件夹中遍历数据文件
+                    grip = np.zeros(self.gripper_dim) 
 
                     # # open grasp file to get data
                     # grasp_name.append(name + '_' + sub_name)
