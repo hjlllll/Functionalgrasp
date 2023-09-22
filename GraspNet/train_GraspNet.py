@@ -1,31 +1,3 @@
-# -*- coding:utf-8 -*-#
-#
-#
-#      0=================================0
-#      |    Kernel Point Convolutions    |
-#      0=================================0
-#
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Callable script to start a training on GraspNet dataset
-#
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#      Zhutq & Wrina - 15/11/2020
-#
-#  CUDA_LAUNCH_BLOCKING=1 python train_GraspNet.py
-
-# Log_2022-03-03_10-57-07
-#
-#           Imports and global variables
-#       \**********************************/
-#
-
-# import time
-# print('sleep sleep sleep sleep sleep sleep sleep sleep sleep sleep')
-# time.sleep(3600)
-
 # Common libs
 import signal
 import os
@@ -42,12 +14,6 @@ from utils.trainer import ModelTrainer
 from utils.pre_trainer import ModelTrainer as pre_trainer
 from models.architectures import KPCNN_G
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#           Config Class
-#       \******************/
-#
 
 class GraspnetConfig(Config):
     """
@@ -101,13 +67,13 @@ class GraspnetConfig(Config):
     # Size of the first subsampling grid in meter
     first_subsampling_dl = 0.002
 
-    # Radius of convolution in "number grid cell". (2.5 is the standard value)  # ratio of rigid kp,固定核的卷积球半径相比方格采样尺寸的比例
+    # Radius of convolution in "number grid cell". (2.5 is the standard value)  # ratio of rigid kp
     conv_radius = 2.5
 
-    # Radius of deformable convolution in "number grid cell". Larger so that deformed kernel can spread out  # ratio of deformable kp,形变核的卷积球半径相比方格采样尺寸的比例
+    # Radius of deformable convolution in "number grid cell". Larger so that deformed kernel can spread out  # ratio of deformable kp
     deform_radius = 6.0
 
-    # Radius of the area of influence of each kernel point in "number grid cell". (1.0 is the standard value)  # The kernel points influence distance，每个核点的影响范围
+    # Radius of the area of influence of each kernel point in "number grid cell". (1.0 is the standard value)  # The kernel points influence distance
     KP_extent = 1.2
 
     # Behavior of convolutions in ('constant', 'linear', 'gaussian')
@@ -121,7 +87,7 @@ class GraspnetConfig(Config):
     in_features_dim = 16   # Dimension of input features, == in_dim; 1, 4, 20
     num_classes = 4 + 3 + 18  # the last output dim, old:4 + 3 + 18 -> new:4 + 3 + 17
 
-    # Can the network learn modulations  # choose if kernel weights are modulated in addition to deformed 选择是否除变形外还调制内核权重
+    # Can the network learn modulations  # choose if kernel weights are modulated in addition to deformed
     modulated = True
 
     # Batch normalization parameters
@@ -164,7 +130,7 @@ class GraspnetConfig(Config):
 
     # Augmentations
     is_aug = False
-    augment_scale_anisotropic = False  # anisotropic:各向异性
+    augment_scale_anisotropic = False  # anisotropic:
     augment_symmetries = [False, False, False]
     augment_rotation = 'none'
     augment_scale_min = 1.0
@@ -185,7 +151,7 @@ class GraspnetConfig(Config):
     # dataset imformation
     object_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/good_shapes'
     grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/grasps'
-    objectEX_dir = r'../Data/expand_all'  # 在预训练时使用，因为预训练使用的是全部物体
+    objectEX_dir = r'../Data/expand_all'
     object_label_dir = r'../Data/labeled_data2/use'
     print(object_label_dir)
 
@@ -193,7 +159,7 @@ class GraspnetConfig(Config):
     use_expand_data = True
     use_seg_data = True
 
-    is_pretrain = False #如果要预训练，则该参数设为True，然后再依据提示去修改后面的previous_training_path 和 use_pretrain
+    is_pretrain = False
     if is_pretrain:
         use_seg_data = False
 
@@ -202,14 +168,7 @@ class GraspnetConfig(Config):
 
     specify_dataset = True
     if specify_dataset:
-        # 以训练、验证和测试为关键字的字典，每项中包含该集的名称，以及use_seg_data的取值，
-        if is_pretrain:
-            dataset_names = {
-                # '索引': ['自定义或已生成的pkl文件名', use_seg_data值, object_label_dir值]
-                'train': ['0.002_s420_465-100_ex-True_seg-False_train_record.pkl', False, r'../Data/for_pretrain'],
-                'val': ['0.002_s420_465-100_ex-True_seg-False_val_record.pkl', False, r'../Data/for_pretrain']}
-        else:
-            dataset_names = {
+        dataset_names = {
                 # '索引': ['自定义或已生成的pkl文件名', use_seg_data值, object_label_dir值]
                 'train': ['0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_one_grasptype20220118_downsampled_addhandpoints_normals_20220911.pkl', True, r'../Data/labeled_data2/use'],  # 0.002_s420_465-100_ex-True_label-True_train_record-is11111
                 'val': ['0.002_s420_465-100_ex-True_seg-True_train_record-is111111-new_one_grasptype20220118_downsampled_addhandpoints_normals.pkl', True, r'../Data/labeled_data2/use'],  # 0.002_s420_465-100_ex-True_label-True_train_record-no11111
@@ -245,17 +204,8 @@ if __name__ == '__main__':
     # Previous chkp
     ###############
 
-
-    # Choose here if you want to start training from a previous snapshot (None for new training)
-    # 使用说明：
-    # 预训练时，上面config中is_pretrain设为True；若无需加载之前的网络模型，则下面previous_training_path设为‘’；若batch需要从0开始，use_pretrain设为True
-    # 正规训练时，is_pretrain设为False，则previous_training_path为预训练模型所在文件夹，use_pretrain设为True则batch从0开始；
-    # 若训练中断，改变previous_training_path为中断前模型所在文件夹，use_pretrain设为False使batch从中断位置开始
-    #previous_training_path = 'A-pre-[gen_fea-loss123-ang-kp-c-a]-[new]'  # 'allloss-[pre-kp-c-a1]-[new]'
     use_pretrain = True
-    previous_training_path='/home/GraspNet_kpconv/Graspnet-kpconv-hjl/results/Log_2022-09-12_12-08-09'
-    # previous_training_path = ''
-    # use_pretrain = False  # False决定batch是继续之前的，还是True=从0开始
+    previous_training_path='' # 如果有预训练结果从这加载
 
     # Choose index of checkpoint to start from. If None, uses the latest chkp
     chkp_idx = None
@@ -331,11 +281,7 @@ if __name__ == '__main__':
     net = KPCNN_G(config)
 
     # Define a trainer class
-    if config.is_pretrain:
-        print('here is pretraining -=- here is pretraining -=- here is pretraining')
-        trainer = pre_trainer(net, config, chkp_path=chosen_chkp, finetune=use_pretrain)
-    else:
-        trainer = ModelTrainer(net, config, chkp_path=chosen_chkp, finetune=use_pretrain)
+    trainer = ModelTrainer(net, config, chkp_path=chosen_chkp, finetune=use_pretrain)
     print('Done in {:.1f}s\n'.format(time.time() - t1))
 
     print('\nStart training')
