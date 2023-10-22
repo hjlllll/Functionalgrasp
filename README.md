@@ -23,7 +23,7 @@ In this project, the grasp synthesis dataset processing is based on [KPConv](htt
 
 * Follow [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp): to install its environment.
 
-* [Pointnet/Pointnet++](https://github.com/yanx27/Pointnet_Pointnet2_pytorch): It is recommended to install the ubuntu 
+* [Pointnet/Pointnet++](https://github.com/yanx27/Pointnet_Pointnet2_pytorch): It is recommended to install the ubuntu version.
 
 * If your research continues to be based on the above projects, please directly cite the original work.
 
