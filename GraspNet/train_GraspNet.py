@@ -149,11 +149,11 @@ class GraspnetConfig(Config):
     saving_path = None
 
     # dataset imformation
-    object_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/good_shapes'
-    grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/grasps'
-    objectEX_dir = r'../Data/expand_all'
-    object_label_dir = r'../Data/labeled_data2/use'
-    print(object_label_dir)
+    # object_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/good_shapes'
+    # grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/grasps'
+    # objectEX_dir = r'../Data/expand_all'
+    # object_label_dir = r'../Data/labeled_data2/use'
+    # print(object_label_dir)
 
     # grasp_dir = r'/home/lm/Documents/ddg_data/grasp_dataset/ggg'
     use_expand_data = True
