@@ -21,7 +21,7 @@ In this project, the grasp synthesis dataset processing is based on [KPConv](htt
 
 * [GraspIt!](http://graspit-simulator.github.io/build/html/installation_linux.html): It is recommended to install the ubuntu version.
 
-* [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp): It is recommended to install the ubuntu version.
+* Follow [Toward-Human-Like-Grasp](https://github.com/zhutq-github/Toward-Human-Like-Grasp): to install its environment.
 
 * [Pointnet/Pointnet++](https://github.com/yanx27/Pointnet_Pointnet2_pytorch): It is recommended to install the ubuntu 
 
