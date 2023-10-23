@@ -380,7 +380,7 @@ class KPCNN_G(nn.Module):
         pre_shapes = grasp_types.squeeze(1)#/1.57
         index = torch.tensor([1,4,7,10])
         pre_shapes[:,index] = 0
-        #pre_shapes *= 0.0
+        pre_shapes *= 0.4
         xo_global = xyz
         deta_angles = torch.zeros([xyz.shape[0],18], dtype=torch.float32).cuda()
 
