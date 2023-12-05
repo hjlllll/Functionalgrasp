@@ -1,5 +1,5 @@
-# Functionalgrasp
-This is the official code of [FunctionalGrasp_Learning_Functional_Grasp_for_Robots_via_Semantic_Hand-Object_Representation](https://ieeexplore.ieee.org/document/10093013). **(RA-Letters 2023)**
+# Functionalgrasp: Learning_Functional_Grasp_for_Robots_via_Semantic_Hand-Object_Representation (RA-Letters 2023)
+This is the official code of [FunctionalGrasp_Learning_Functional_Grasp_for_Robots_via_Semantic_Hand-Object_Representation](https://ieeexplore.ieee.org/document/10093013). 
 
 ## Introduction
 <img src="functionalgrasp.png" width="840px">
